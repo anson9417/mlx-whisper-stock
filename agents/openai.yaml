@@ -1,0 +1,4 @@
+interface:
+  display_name: "MLX Whisper Stock"
+  short_description: "用 uv 與 mlx-whisper 產生股市影片字幕"
+  default_prompt: "Use $mlx-whisper-stock to bootstrap a uv-managed workspace, transcribe market videos with mlx-whisper, and post-process the SRT with words.csv rules."
