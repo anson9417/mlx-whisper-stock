@@ -9,8 +9,9 @@ fi
 INPUT_MEDIA="$1"
 OUTPUT_NAME="$2"
 WORDS_CSV="$3"
-LANGUAGE="${4:-auto}"
+LANGUAGE="${4:-zh}"
 MODEL="${MLX_WHISPER_MODEL:-mlx-community/whisper-large-v3-turbo}"
+PROMPT="${MLX_WHISPER_PROMPT:-股票財經節目，可能包含專業術語和公司資訊。請特別注意數字和專有名詞的準確性。請將結果轉錄為繁體中文，包含適當的標點符號。}"
 WORKDIR="${MLX_WHISPER_WORKDIR:-$PWD}"
 
 INPUT_PATH="$(python - <<'PY' "$INPUT_MEDIA"
@@ -52,14 +53,13 @@ ARGS=(
   --output-name "$OUTPUT_NAME"
   --output-format srt
   --task transcribe
+  --temperature 0
   --condition-on-previous-text False
   --hallucination-silence-threshold 1.5
-  --initial-prompt "請將中文內容輸出為繁體中文；若原音包含英文，請保留英文原文，不要翻譯成中文。"
+  --initial-prompt "$PROMPT"
 )
 
-if [[ "$LANGUAGE" != "auto" ]]; then
-  ARGS+=(--language "$LANGUAGE")
-fi
+ARGS+=(--language "$LANGUAGE")
 
 ARGS+=("$INPUT_PATH")
 

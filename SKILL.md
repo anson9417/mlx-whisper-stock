@@ -18,7 +18,10 @@ Use `uv` for the entire workflow.
 ## Rules
 
 - Default model: `mlx-community/whisper-large-v3-turbo`.
-- Default language: `auto`.
+- Default language: `zh`.
+- Default temperature: `0`.
+- Default response format: `srt`.
+- Default prompt: `股票財經節目，可能包含專業術語和公司資訊。請特別注意數字和專有名詞的準確性。請將結果轉錄為繁體中文，包含適當的標點符號。`
 - Keep Chinese output in Traditional Chinese.
 - Keep spoken English in English; do not translate it into Chinese.
 - Apply every `words.csv` replacement row exactly as written.
@@ -55,5 +58,5 @@ uv run python ./scripts/reflow_srt_entries.py INPUT.srt words.csv
 ### scripts/
 
 - `bootstrap_workspace.sh`: create or repair a uv-managed workspace with `mlx-whisper`.
-- `transcribe_stock_srt.sh`: run `mlx_whisper` with stock-subtitle defaults and emit `.srt`.
+- `transcribe_stock_srt.sh`: run `mlx_whisper` with `mlx-community/whisper-large-v3-turbo`, `language=zh`, `temperature=0`, the stock prompt, and emit `.srt`.
 - `reflow_srt_entries.py`: apply `words.csv`, delete filler text, drop one-character lines, and reflow subtitles into one line per entry with a 20-character limit.
