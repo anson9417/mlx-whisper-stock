@@ -6,12 +6,17 @@ import sys
 from dataclasses import dataclass
 from pathlib import Path
 
+try:
+    from opencc import OpenCC
+except Exception:  # pragma: no cover - handled by fallback
+    OpenCC = None  # type: ignore[assignment]
+
 
 MAX_CHARS = 20
 ASCII_TOKEN_RE = re.compile(r"[A-Za-z0-9][A-Za-z0-9.+#&%:/_-]*")
 SPACE_RE = re.compile(r"\s+")
 PUNCTUATION = set("，。！？；：、,.!?;:)]}")
-WORDS_TO_DELETE = ["喔", "啊", "哇", "呢", "然後", "的話", "哦", "嗯", "這樣一個", "呀", "哎", "?"]
+WORDS_TO_DELETE = ["喔", "啊", "哇", "呢", "然後", "的話", "哦", "嗯", "這樣一個", "呀", "哎", "?", "的相關", "的部分", "的這樣"]
 KEEP_NA_PREFIXES = (
     "那麼",
     "那個",
@@ -30,6 +35,8 @@ KEEP_NA_PREFIXES = (
     "那篇",
     "那2次",
 )
+
+_OPENCC = OpenCC("s2t") if OpenCC else None
 
 
 @dataclass
@@ -159,7 +166,14 @@ def normalize_spacing(text: str) -> str:
     return "".join(chars)
 
 
+def to_traditional(text: str) -> str:
+    if not _OPENCC:
+        return text
+    return _OPENCC.convert(text)
+
+
 def clean_text(text: str, replacements: list[tuple[str, str]], stats: dict[str, int]) -> str:
+    text = to_traditional(text)
     for word in WORDS_TO_DELETE:
         count = text.count(word)
         if count:

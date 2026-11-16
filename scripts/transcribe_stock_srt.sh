@@ -10,18 +10,21 @@ INPUT_MEDIA="$1"
 OUTPUT_NAME="$2"
 WORDS_CSV="$3"
 LANGUAGE="${4:-zh}"
+CLI_LANGUAGE="$LANGUAGE"
+if [[ "$CLI_LANGUAGE" == "zh-TW" ]]; then
+  CLI_LANGUAGE="zh"
+fi
 MODEL="${MLX_WHISPER_MODEL:-mlx-community/whisper-large-v3-turbo}"
-PROMPT="${MLX_WHISPER_PROMPT:-股票財經節目，可能包含專業術語和公司資訊。請特別注意數字和專有名詞的準確性。請將結果轉錄為繁體中文，包含適當的標點符號。}"
 WORKDIR="${MLX_WHISPER_WORKDIR:-$PWD}"
 
-INPUT_PATH="$(python - <<'PY' "$INPUT_MEDIA"
+INPUT_PATH="$(uv run python - <<'PY' "$INPUT_MEDIA"
 from pathlib import Path
 import sys
 print(Path(sys.argv[1]).expanduser().resolve())
 PY
 )"
 
-WORDS_PATH="$(python - <<'PY' "$WORDS_CSV"
+WORDS_PATH="$(uv run python - <<'PY' "$WORDS_CSV"
 from pathlib import Path
 import sys
 print(Path(sys.argv[1]).expanduser().resolve())
@@ -53,13 +56,14 @@ ARGS=(
   --output-name "$OUTPUT_NAME"
   --output-format srt
   --task transcribe
-  --temperature 0
   --condition-on-previous-text False
   --hallucination-silence-threshold 1.5
-  --initial-prompt "$PROMPT"
+  --initial-prompt "這是講解股票和財經的節目，內容包含專業術語和上市櫃公司資訊。請特別注意數字和專有名詞的準確性。將結果轉錄為繁體中文，包含適當的標點符號。"
 )
 
-ARGS+=(--language "$LANGUAGE")
+if [[ "$LANGUAGE" != "auto" ]]; then
+  ARGS+=(--language "$CLI_LANGUAGE")
+fi
 
 ARGS+=("$INPUT_PATH")
 

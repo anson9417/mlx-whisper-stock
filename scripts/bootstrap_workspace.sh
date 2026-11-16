@@ -20,7 +20,7 @@ fi
 
 uv python pin "$PYTHON_VERSION"
 
-python - <<'PY'
+uv run python - <<'PY'
 from pathlib import Path
 import re
 
