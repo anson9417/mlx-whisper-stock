@@ -145,3 +145,34 @@ def test_cli_end_to_end(tmp_path):
     assert [e.index for e in entries] == [1, 2, 3]
     assert entries[1].start_ms == 4000
     assert entries[-1].end_ms == 10000
+
+
+# --- 簡轉繁 -------------------------------------------------------------------
+
+
+def test_simplified_chinese_is_converted_to_traditional():
+    assert clean("欢迎马上跟我们联系") == "歡迎馬上跟我們聯繫"
+
+
+def test_replacements_apply_after_traditional_conversion():
+    # words.csv 以繁體撰寫，簡體輸入也要能命中
+    assert clean("台机电今天涨", [("台機電", "台積電")]) == "台積電今天漲"
+
+
+def test_cli_fails_loudly_without_opencc(tmp_path):
+    srt = tmp_path / "input.srt"
+    srt.write_text("1\n00:00:00,000 --> 00:00:02,000\n欢迎\n", encoding="utf-8")
+    words = tmp_path / "words.csv"
+    words.write_text("", encoding="utf-8")
+
+    # 模擬環境中沒有安裝 opencc
+    code = (
+        "import sys, runpy; sys.modules['opencc'] = None; "
+        f"sys.argv = ['x', {str(srt)!r}, {str(words)!r}]; "
+        f"runpy.run_path({str(SCRIPT)!r}, run_name='__main__')"
+    )
+    proc = subprocess.run([sys.executable, "-c", code], capture_output=True, text=True)
+    assert proc.returncode != 0
+    assert "OpenCC" in proc.stderr
+    # 不可默默輸出未轉換的字幕
+    assert "欢迎" in srt.read_text(encoding="utf-8")

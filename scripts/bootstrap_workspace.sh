@@ -36,16 +36,16 @@ if 'dependencies = [' not in text:
 path.write_text(text, encoding="utf-8")
 PY
 
-if ! uv sync >/dev/null 2>&1; then
-  uv add mlx-whisper
-else
-  if ! uv run python - <<'PY' >/dev/null 2>&1
-import mlx_whisper
-PY
-  then
-    uv add mlx-whisper
+uv sync >/dev/null 2>&1 || true
+
+# 套件名稱:匯入名稱。opencc 用於將字幕轉為繁體中文，缺少時 reflow 腳本會直接報錯。
+for dep in "mlx-whisper:mlx_whisper" "opencc:opencc"; do
+  package="${dep%%:*}"
+  module="${dep##*:}"
+  if ! uv run python -c "import ${module}" >/dev/null 2>&1; then
+    uv add "$package"
   fi
-fi
+done
 
 uv sync
 echo "Workspace ready at: $TARGET_DIR"

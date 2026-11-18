@@ -8,8 +8,11 @@ from pathlib import Path
 
 try:
     from opencc import OpenCC
-except Exception:  # pragma: no cover - handled by fallback
-    OpenCC = None  # type: ignore[assignment]
+except ImportError:  # pragma: no cover - environment check
+    sys.exit(
+        "錯誤：找不到 OpenCC，無法將字幕轉為繁體中文。\n"
+        "請在工作區執行 `uv add opencc`，或重新執行 scripts/bootstrap_workspace.sh。"
+    )
 
 
 MAX_CHARS = 20
@@ -36,7 +39,7 @@ KEEP_NA_PREFIXES = (
     "那2次",
 )
 
-_OPENCC = OpenCC("s2t") if OpenCC else None
+_OPENCC = OpenCC("s2t")
 
 
 @dataclass
@@ -167,9 +170,9 @@ def normalize_spacing(text: str) -> str:
 
 
 def to_traditional(text: str) -> str:
-    if not _OPENCC:
-        return text
-    return _OPENCC.convert(text)
+    # OpenCC s2t 會把「台」轉成「臺」（台積電→臺積電），統一改回台灣常用的「台」，
+    # 避免 words.csv 中以「台」撰寫的替換規則失效。
+    return _OPENCC.convert(text).replace("臺", "台")
 
 
 def clean_text(text: str, replacements: list[tuple[str, str]], stats: dict[str, int]) -> str:

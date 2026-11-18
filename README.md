@@ -79,7 +79,7 @@ uv run python ./scripts/reflow_srt_entries.py INPUT.srt words.csv
 從儲存庫根目錄執行單元測試與功能測試：
 
 ```bash
-uvx pytest tests/
+uvx --with opencc pytest tests/
 ```
 
 要刪除的語助詞清單（`WORDS_TO_DELETE`）和「那」開頭要保留的前綴（`KEEP_NA_PREFIXES`）都定義在 `scripts/reflow_srt_entries.py`，以腳本為準。要調整規則請直接修改腳本，`SKILL.md` 只提醒規則的位置。
