@@ -1,6 +1,6 @@
 ---
 name: mlx-whisper-stock
-description: Use when Codex needs to transcribe stock-market audio or video with mlx-whisper in a uv-managed workspace, generate `.srt` subtitles, apply `words.csv` typo replacements, remove filler words, keep Chinese in Traditional Chinese, preserve spoken English, and reflow subtitles so each subtitle entry is a single line with at most 20 characters.
+description: Use when transcribing stock-market audio or video with mlx-whisper in a uv-managed workspace, generate `.srt` subtitles, apply `words.csv` typo replacements, remove filler words, keep Chinese in Traditional Chinese, preserve spoken English, and reflow subtitles so each subtitle entry is a single line with at most 20 characters.
 ---
 
 # MLX Whisper Stock
