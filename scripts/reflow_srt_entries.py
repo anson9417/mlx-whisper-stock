@@ -16,7 +16,7 @@ MAX_CHARS = 20
 ASCII_TOKEN_RE = re.compile(r"[A-Za-z0-9][A-Za-z0-9.+#&%:/_-]*")
 SPACE_RE = re.compile(r"\s+")
 PUNCTUATION = set("，。！？；：、,.!?;:)]}")
-WORDS_TO_DELETE = ["喔", "啊", "哇", "呢", "然後", "的話", "哦", "嗯", "這樣一個", "呀", "哎", "?", "的相關", "的部分", "的這樣"]
+WORDS_TO_DELETE = ["喔", "啊", "哇", "呢", "然後", "的話", "哦", "嗯", "這樣一個", "呀", "哎", "?", "的相關", "的部分", "的這樣", "耶", "啦"]
 KEEP_NA_PREFIXES = (
     "那麼",
     "那個",

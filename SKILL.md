@@ -22,9 +22,8 @@ Use `uv` for the entire workflow.
 - Keep Chinese output in Traditional Chinese.
 - Keep spoken English in English; do not translate it into Chinese.
 - Apply every `words.csv` replacement row exactly as written.
-- Delete filler text when it appears in subtitles: `喔`, `啊`, `哇`, `呢`, `然後`, `的話`, `哦`, `嗯`, `這樣一個`, `呀`, `哎`, `?`, `的部分`, `耶`, `啦`.
-- If a subtitle line starts with `那`, remove that leading character unless the line starts with one of these prefixes:
-  `那麼`, `那個`, `那些`, `那一`, `那邊`, `那種`, `那天`, `那時候`, `那片`, `那張`, `那檔`, `那是`, `那隻`, `那次`, `那篇`, `那2次`.
+- Delete filler words and phrases. The authoritative list is `WORDS_TO_DELETE` in `scripts/reflow_srt_entries.py`; to change it, edit the script, not this file.
+- If a subtitle line starts with `那`, remove that leading character unless it starts with a kept prefix. The authoritative list is `KEEP_NA_PREFIXES` in `scripts/reflow_srt_entries.py`; to change it, edit the script, not this file.
 - Reflow the final `.srt` so each subtitle entry contains exactly one text line.
 - Limit each subtitle line to 20 characters.
 - If a line exceeds 20 characters, split it into new subtitle entries and redistribute the original timing proportionally.
